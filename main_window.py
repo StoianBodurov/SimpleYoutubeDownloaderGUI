@@ -38,16 +38,17 @@ class MainWindow:
     def download(self):
         yt_url = self.url.get()
         path = self.get_file_location()
-        try:
-            yt = YouTube(yt_url)
-            if self.file_format.get() == 'audio':
-                self.download_mp3(yt, path)
-            else:
-                self.download_mp4(yt, path)
-        except Exception as ex:
-            messagebox.showwarning('showwarning', str(ex))
-        finally:
-            self.url.set('')
+        if path:
+            try:
+                yt = YouTube(yt_url)
+                if self.file_format.get() == 'audio':
+                    self.download_mp3(yt, path)
+                else:
+                    self.download_mp4(yt, path)
+            except Exception as ex:
+                messagebox.showwarning('showwarning', str(ex))
+            finally:
+                self.url.set('')
 
     @staticmethod
     def download_mp4(you_tube, path):
