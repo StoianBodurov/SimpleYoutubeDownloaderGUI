@@ -1,5 +1,5 @@
 from tkinter import *
-from tkinter import ttk, messagebox
+from tkinter import ttk, messagebox, filedialog
 
 from pytube import YouTube
 
@@ -37,25 +37,26 @@ class MainWindow:
 
     def download(self):
         yt_url = self.url.get()
+        path = self.get_file_location()
         try:
             yt = YouTube(yt_url)
             if self.file_format.get() == 'audio':
-                self.download_mp3(yt)
+                self.download_mp3(yt, path)
             else:
-                self.download_mp4(yt)
+                self.download_mp4(yt, path)
         except Exception as ex:
             messagebox.showwarning('showwarning', str(ex))
         finally:
             self.url.set('')
 
     @staticmethod
-    def download_mp4(you_tube):
-        you_tube.streams.get_highest_resolution().download()
+    def download_mp4(you_tube, path):
+        you_tube.streams.get_highest_resolution().download(output_path=path)
 
     @staticmethod
-    def download_mp3(you_tube):
+    def download_mp3(you_tube, path):
         filename = you_tube.title
-        you_tube.streams.get_audio_only().download(filename=f'{filename}.mp3')
+        you_tube.streams.get_audio_only().download(filename=f'{filename}.mp3', output_path=path)
 
     def entry_paste(self):
         clipboard = self.root.clipboard_get()
@@ -66,4 +67,9 @@ class MainWindow:
             self.menu.tk_popup(event.x_root, event.y_root)
         finally:
             self.menu.grab_release()
+
+    @staticmethod
+    def get_file_location():
+        path = filedialog.askdirectory()
+        return path
 
